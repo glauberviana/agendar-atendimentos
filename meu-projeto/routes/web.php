@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\AdminMiddleware;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -16,5 +17,16 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+// Seu novo grupo de rotas para Administradores
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/admin', function () {
+        return view('admin.dashboard');
+    })->name('admin.dashboard'); // Adicionado um 'name' que pode ser útil depois
+});
+
+Route::get('/painel-admin', function () {
+    return view('sua-view-do-admin'); 
+})->middleware(['auth', AdminMiddleware::class]);
 
 require __DIR__.'/auth.php';
