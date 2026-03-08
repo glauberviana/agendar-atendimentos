@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\Admin\HorarioController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -40,14 +42,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth', 'admin'])
+Route::middleware(['auth','admin'])
     ->prefix('admin')
     ->name('admin.')
-    ->group(function () {
+    ->group(function(){
 
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', fn() => view('admin.dashboard'))->name('dashboard');
+
+    Route::get('/horarios',[HorarioController::class,'index'])->name('horarios');
+
+    Route::post('/horarios',[HorarioController::class,'store'])->name('horarios.store');
+
+    Route::put('/horarios/{id}',[HorarioController::class,'update'])->name('horarios.update');
+
+    Route::delete('/horarios/{id}',[HorarioController::class,'destroy'])->name('horarios.destroy');
 
 });
 

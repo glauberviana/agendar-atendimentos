@@ -1,18 +1,34 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Painel Administrativo
-        </h2>
-    </x-slot>
+@extends('layouts.admin')
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                <h1 class="text-2xl font-bold">Bem-vindo, Administrador</h1>
-                <p class="mt-4 text-gray-600">
-                    Aqui você pode gerenciar o sistema.
-                </p>
-            </div>
-        </div>
-    </div>
-</x-app-layout>
+@section('content')
+
+<h2 class="text-2xl font-bold mb-6">
+Dashboard
+</h2>
+
+<div class="grid grid-cols-3 gap-6">
+
+<div class="bg-white shadow rounded p-6">
+<h3 class="text-gray-500">Horários</h3>
+<p class="text-3xl font-bold">
+{{ \App\Models\Horario::count() }}
+</p>
+</div>
+
+<div class="bg-white shadow rounded p-6">
+<h3 class="text-gray-500">Usuários</h3>
+<p class="text-3xl font-bold">
+{{ \App\Models\User::count() }}
+</p>
+</div>
+
+<div class="bg-white shadow rounded p-6">
+<h3 class="text-gray-500">Agendamentos</h3>
+<p class="text-3xl font-bold">
+0
+</p>
+</div>
+
+</div>
+
+@endsection
