@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\User;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Agendamento;
 use Illuminate\Support\Facades\Auth;
@@ -20,13 +21,13 @@ class AgendamentoController extends Controller
             $agendamentos = Agendamento::where('user_id', Auth::id())->get();
         }
 
-        return view('agendamentos.index', compact('agendamentos'));
+        return view('User.agendamentos.index', compact('agendamentos'));
     }
 
 
     public function create()
     {
-        return view('agendamentos.create');
+        return view('User.agendamentos.create');
     }
 
 
@@ -45,7 +46,7 @@ class AgendamentoController extends Controller
             'descricao' => $request->descricao,
         ]);
 
-        return redirect()->route('agendamentos.index')
+        return redirect()->route('dashboard')
             ->with('success', 'Agendamento criado com sucesso!');
     }
 
@@ -59,7 +60,7 @@ class AgendamentoController extends Controller
             abort(403);
         }
 
-        return view('agendamentos.show', compact('agendamento'));
+        return view('User.agendamentos.show', compact('agendamento'));
     }
 
 
@@ -71,7 +72,7 @@ class AgendamentoController extends Controller
             abort(403);
         }
 
-        return view('agendamentos.edit', compact('agendamento'));
+        return view('User.agendamentos.edit', compact('agendamento'));
     }
 
 

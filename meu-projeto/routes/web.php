@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Admin\HorarioController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\User\AgendamentoController;
+use App\Models\Agendamento;
 use Illuminate\Support\Facades\Route;
 
 
@@ -25,8 +27,25 @@ Route::get('/', function () {
 Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/dashboard', function () {
-        return view('dashboard');
+
+        $agendamentos = Agendamento::where('user_id', auth()->id())
+            ->latest()
+            ->take(5)
+            ->get();
+
+        return view('User.dashboard', compact('agendamentos'));
+
     })->name('dashboard');
+
+
+    // ROTAS DE AGENDAMENTO (USUÁRIO)
+
+    Route::get('/agendamentos/create', [AgendamentoController::class, 'create'])
+        ->name('agendamentos.create');
+
+    Route::post('/agendamentos', [AgendamentoController::class, 'store'])
+        ->name('agendamentos.store');
+
 
     // perfil do usuário
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
