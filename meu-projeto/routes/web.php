@@ -29,11 +29,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', function () {
 
         $agendamentos = Agendamento::where('user_id', auth()->id())
-            ->latest()
-            ->take(5)
+            ->orderBy('data')
+            ->orderBy('hora')
             ->get();
 
-        return view('User.dashboard', compact('agendamentos'));
+        $proximoAgendamento = $agendamentos->first();
+
+        $recentes = $agendamentos->take(3);
+
+        return view('User.dashboard', compact('agendamentos','proximoAgendamento','recentes'));
 
     })->name('dashboard');
 
