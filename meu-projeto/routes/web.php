@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\HorarioController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\User\AgendamentoController;
@@ -65,20 +66,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
 |--------------------------------------------------------------------------
 */
 
+
 Route::middleware(['auth','admin'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function(){
 
-    Route::get('/dashboard', fn() => view('admin.dashboard'))->name('dashboard');
+    Route::get('/dashboard',[DashboardController::class,'index'])
+        ->name('dashboard');
 
-    Route::get('/horarios',[HorarioController::class,'index'])->name('horarios');
+    Route::get('/atendimentos',[AtendimentoController::class,'index'])
+        ->name('atendimentos');
 
-    Route::post('/horarios',[HorarioController::class,'store'])->name('horarios.store');
-
-    Route::put('/horarios/{id}',[HorarioController::class,'update'])->name('horarios.update');
-
-    Route::delete('/horarios/{id}',[HorarioController::class,'destroy'])->name('horarios.destroy');
+    Route::post('/atendimentos',[AtendimentoController::class,'store'])
+        ->name('atendimentos.store');
 
 });
 
