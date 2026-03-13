@@ -45,6 +45,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // ROTAS DE AGENDAMENTO (USUÁRIO)
 
+    Route::get('/agendamentos', function () {
+        return view('User.agendamentos.index');
+    })->name('agendamentos.index');
+
     Route::get('/agendamentos/create', [AgendamentoController::class, 'create'])
         ->name('agendamentos.create');
 

@@ -25,8 +25,13 @@ class="flex items-center gap-3 hover:bg-[#1E7F5A] p-3 rounded-lg">
 Novo Agendamento
 </a>
 
+<<<<<<< HEAD
 <a href="#"
 class="flex items-center gap-3 hover:bg-[#1E7F5A] p-3 rounded-lg">
+=======
+<a href="{{ route('agendamentos.index') }}"
+class="flex items-center gap-3 hover:bg-[#1E7F5A] p-3 rounded-lg transition duration-200">
+>>>>>>> 7874040a16b2be70ffe388338a862ed1db676473
 
 <img src="{{ asset('icons/meusagendamentos.svg') }}" class="w-5 h-5">
 Meus Agendamentos
