@@ -30,7 +30,7 @@ Novo Agendamento
 
 </a>
 
-<a href="#"
+<a href="{{ route('agendamentos.index') }}"
 class="flex items-center gap-3 hover:bg-[#1E7F5A] p-3 rounded-lg transition duration-200">
 
 <img src="{{ asset('icons/meusagendamentos.svg') }}" class="w-5 h-5">
