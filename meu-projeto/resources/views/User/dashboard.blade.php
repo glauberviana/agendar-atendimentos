@@ -1,10 +1,9 @@
 <x-app-layout>
 
-<div class="flex min-h-screen bg-[#F6F6F6]">
+<div class="flex min-h-screen bg-gray-300">
 
 <!-- SIDEBAR -->
-
-<div class="w-80 bg-gradient-to-b from-[#28A279] to-[#18663C] text-white flex flex-col p-6">
+<div class="w-72 bg-gradient-to-b from-[#28A279] to-[#18663C] text-white flex flex-col p-6">
 
 <h1 class="text-xl font-bold mb-10">
 INSTITUIÇÃO
@@ -13,30 +12,24 @@ INSTITUIÇÃO
 <nav class="space-y-4">
 
 <a href="{{ route('dashboard') }}"
-class="flex items-center gap-3 bg-[#1E7F5A] p-3 rounded-lg transition duration-200">
+class="flex items-center gap-3 bg-[#1E7F5A] p-3 rounded-lg">
 
 <img src="{{ asset('icons/inicio.svg') }}" class="w-5 h-5">
-
 Início
-
 </a>
 
 <a href="{{ route('agendamentos.create') }}"
-class="flex items-center gap-3 hover:bg-[#1E7F5A] p-3 rounded-lg transition duration-200">
+class="flex items-center gap-3 hover:bg-[#1E7F5A] p-3 rounded-lg">
 
 <img src="{{ asset('icons/agendamento.svg') }}" class="w-5 h-5">
-
 Novo Agendamento
-
 </a>
 
 <a href="#"
-class="flex items-center gap-3 hover:bg-[#1E7F5A] p-3 rounded-lg transition duration-200">
+class="flex items-center gap-3 hover:bg-[#1E7F5A] p-3 rounded-lg">
 
 <img src="{{ asset('icons/meusagendamentos.svg') }}" class="w-5 h-5">
-
 Meus Agendamentos
-
 </a>
 
 </nav>
@@ -45,25 +38,20 @@ Meus Agendamentos
 
 
 
-<!-- CONTEÚDO -->
-
+<!-- ÁREA PRINCIPAL -->
 <div class="flex-1 flex flex-col">
 
-<!-- TOPO -->
+<!-- HEADER -->
+<div class="flex justify-between items-center bg-white border-b border-gray-200 px-8 h-[70px]">
 
-<div class="flex justify-between items-center px-10 pt-10">
-
-<h2 class="text-xl font-semibold text-[#28A279]">
+<h2 class="text-[#28A279] font-semibold text-lg">
 Olá, {{ Auth::user()->name }}
 </h2>
-
-
-<!-- BOLINHA USUÁRIO -->
 
 <div class="relative">
 
 <button onclick="toggleMenu()"
-class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center font-bold">
+class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center font-semibold">
 
 {{ strtoupper(substr(Auth::user()->name,0,1)) }}
 
@@ -92,50 +80,39 @@ Sair
 </div>
 
 
-<!-- LINHA -->
 
-<div class="w-full h-[4px] bg-[#D9D9D9] mt-6"></div>
+<!-- CONTEÚDO -->
+<div class="flex flex-col items-center px-10 py-10 gap-10">
 
-
-
-<!-- CONTEÚDO CENTRAL -->
-
-<div class="flex flex-col items-center p-10">
-
-<!-- CARDS SUPERIORES -->
-
-<div class="flex gap-10 justify-center">
-
+<!-- CARDS -->
+<div class="grid grid-cols-2 gap-8 w-full max-w-6xl">
 
 <!-- PRÓXIMO ATENDIMENTO -->
+<div class="bg-[#269C73] text-white p-6 rounded-xl shadow flex flex-col justify-between min-h-[200px]">
 
-<div class="bg-[#269C73] text-white p-6 rounded-[20px] shadow w-[480px] h-[220px] flex flex-col justify-between">
-
-<h3 class="text-lg font-semibold">
+<h3 class="text-lg font-semibold mb-2">
 Próximo Atendimento
 </h3>
 
 @if($proximoAgendamento)
 
 <p>
-Data: {{ $proximoAgendamento->data }} {{ $proximoAgendamento->hora }}
+Data: {{ $proximoAgendamento->data }} às {{ $proximoAgendamento->hora }}
 </p>
 
 @if($proximoAgendamento->descricao)
-<p class="text-sm">
+<p class="text-sm mt-2">
 {{ $proximoAgendamento->descricao }}
 </p>
 @endif
 
 @else
 
-<p>
-Nenhum atendimento
-</p>
+<p>Nenhum atendimento</p>
 
 @endif
 
-<div class="flex gap-4">
+<div class="flex gap-4 mt-4">
 
 <button class="border border-red-500 text-red-500 px-4 py-1 rounded hover:bg-red-500 hover:text-white transition">
 Cancelar
@@ -152,11 +129,10 @@ Reagendar
 
 
 <!-- AGENDAR NOVO -->
-
 <a href="{{ route('agendamentos.create') }}"
-class="bg-[#269C73] text-white p-6 rounded-[20px] shadow w-[480px] h-[220px] flex flex-col items-center justify-center hover:scale-105 transition">
+class="bg-[#269C73] text-white p-6 rounded-xl shadow flex flex-col items-center justify-center hover:scale-105 transition min-h-[200px]">
 
-<img src="{{ asset('icons/calendario.svg') }}" class="w-28 h-28 mb-4">
+<img src="{{ asset('icons/calendario.svg') }}" class="w-20 mb-4">
 
 <p class="text-lg font-semibold">
 Agendar Novo
@@ -169,11 +145,10 @@ Agendar Novo
 
 
 <!-- ATENDIMENTOS RECENTES -->
-
-<div class="bg-[#269C73] text-white p-6 rounded-[20px] mt-10 w-[1000px] h-[260px] shadow">
+<div class="bg-[#269C73] text-white p-6 rounded-xl shadow w-full max-w-6xl">
 
 <h3 class="text-lg font-semibold mb-6">
-Atendimento Recentes
+Atendimentos Recentes
 </h3>
 
 @if($recentes->isEmpty())
@@ -182,26 +157,41 @@ Atendimento Recentes
 
 @else
 
-<ul class="space-y-3">
+<table class="w-full bg-white text-black rounded-xl overflow-hidden">
+
+<thead class="bg-gray-100">
+<tr>
+<th class="p-3  text-center">Data</th>
+<th class="p-3  text-center">Hora</th>
+<th class="p-3 text-center">Descrição</th>
+</tr>
+</thead>
+
+<tbody>
 
 @foreach($recentes as $agendamento)
 
-<li>
+<tr class="border-t">
 
-{{ $agendamento->data }} - {{ $agendamento->hora }}
+<td class="p-3 text-center">
+{{ $agendamento->data }}
+</td>
 
-@if($agendamento->descricao)
-<br>
-<span class="text-sm">
+<td class="p-3 text-center">
+{{ $agendamento->hora }}
+</td>
+
+<td class="p-3 text-center">
 {{ $agendamento->descricao }}
-</span>
-@endif
+</td>
 
-</li>
+</tr>
 
 @endforeach
 
-</ul>
+</tbody>
+
+</table>
 
 @endif
 
@@ -211,6 +201,7 @@ Atendimento Recentes
 
 </div>
 
+</div>
 
 
 <script>

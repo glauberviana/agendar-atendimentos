@@ -8,7 +8,7 @@
 <div class="grid grid-cols-3 gap-6">
 
 
-<div class="bg-gradient-to-r from-[#269C73] to-[#1A6B41] text-white p-6 rounded-xl shadow-lg">
+<div class="bg-[#269C73] text-white p-6 rounded-xl shadow-lg">
 
 <div class="text-3xl font-bold">
 {{ $totalUsuarios }}
@@ -22,7 +22,7 @@ Total de Usuários
 
 
 
-<div class="bg-gradient-to-r from-[#269C73] to-[#1A6B41] text-white p-6 rounded-xl shadow-lg">
+<div class="bg-[#269C73] text-white p-6 rounded-xl shadow-lg">
 
 <div class="text-3xl font-bold">
 {{ $totalAgendados }}
@@ -36,7 +36,7 @@ Atendimentos Agendados
 
 
 
-<div class="bg-gradient-to-r from-[#269C73] to-[#1A6B41] text-white p-6 rounded-xl shadow-lg">
+<div class="bg-[#269C73] text-white p-6 rounded-xl shadow-lg">
 
 <div class="text-3xl font-bold">
 {{ $totalConcluidos }}
@@ -53,7 +53,7 @@ Atendimentos Concluídos
 
 
 
-<div class="bg-gradient-to-r from-[#269C73] to-[#1A6B41] p-6 rounded-xl text-white shadow-lg">
+<div class="bg-[#269C73] p-6 rounded-xl text-white shadow-lg">
 
 <h3 class="font-semibold mb-4">
 
