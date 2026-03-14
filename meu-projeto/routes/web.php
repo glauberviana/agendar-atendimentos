@@ -44,24 +44,34 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 
     // ROTAS DE AGENDAMENTO (USUÁRIO)
-// ROTAS DE AGENDAMENTO (USUÁRIO)
 
-Route::get('/agendamentos/create', [AgendamentoController::class, 'create'])
-    ->name('agendamentos.create');
+    Route::get('/agendamentos/create', [AgendamentoController::class, 'create'])
+        ->name('agendamentos.create');
 
-Route::post('/agendamentos', [AgendamentoController::class, 'store'])
-    ->name('agendamentos.store');
+    Route::post('/agendamentos', [AgendamentoController::class, 'store'])
+        ->name('agendamentos.store');
 
-Route::get('/agendamentos', function () {
+    // NOVA ROTA PARA CANCELAR AGENDAMENTO
+    Route::delete('/agendamentos/{id}', [AgendamentoController::class, 'destroy'])
+        ->name('agendamentos.destroy');
 
-    $agendamentos = \App\Models\Agendamento::where('user_id', auth()->id())
-        ->orderBy('data')
-        ->orderBy('hora')
-        ->get();
 
-    return view('User.agendamentos.index', compact('agendamentos'));
+    Route::get('/agendamentos', function () {
 
-})->name('agendamentos.index');
+        $agendamentos = \App\Models\Agendamento::where('user_id', auth()->id())
+            ->orderBy('data')
+            ->orderBy('hora')
+            ->get();
+
+        return view('User.agendamentos.index', compact('agendamentos'));
+
+    })->name('agendamentos.index');
+
+    Route::get('/agendamentos/{id}/edit', [AgendamentoController::class, 'edit'])
+    ->name('agendamentos.edit');
+
+Route::put('/agendamentos/{id}', [AgendamentoController::class, 'update'])
+    ->name('agendamentos.update');
 
 
     // perfil do usuário

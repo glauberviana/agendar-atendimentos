@@ -120,13 +120,20 @@ Atendimento Acadêmico
 
 <div class="flex gap-4 mt-4">
 
-<button class="bg-[#1E7F5A] px-4 py-1 rounded hover:bg-[#16694a] transition">
+<a href="{{ route('agendamentos.edit', $agendamento->id) }}"
+class="bg-[#1E7F5A] px-4 py-1 rounded hover:bg-[#16694a] transition">
 Reagendar
-</button>
+</a>
+
+<form method="POST" action="{{ route('agendamentos.destroy', $agendamento->id) }}">
+@csrf
+@method('DELETE')
 
 <button class="bg-red-500 px-4 py-1 rounded hover:bg-red-900 transition">
 Cancelar
 </button>
+
+</form>
 
 </div>
 

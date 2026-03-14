@@ -14,11 +14,14 @@ class AgendamentoController extends Controller
     {
         // Admin vê todos os agendamentos
         if (Auth::user()->role === 'admin') {
-            $agendamentos = Agendamento::all();
+            $agendamentos = Agendamento::orderBy('data')->orderBy('hora')->get();
         } 
         // Usuário comum vê apenas os seus
         else {
-            $agendamentos = Agendamento::where('user_id', Auth::id())->get();
+            $agendamentos = Agendamento::where('user_id', Auth::id())
+                ->orderBy('data')
+                ->orderBy('hora')
+                ->get();
         }
 
         return view('User.agendamentos.index', compact('agendamentos'));
@@ -34,10 +37,34 @@ class AgendamentoController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'data' => 'required|date',
+            'data' => 'required|date|after_or_equal:today',
             'hora' => 'required',
             'descricao' => 'nullable|string|max:255',
         ]);
+
+        // bloquear hora passada SOMENTE se for hoje
+        if ($request->data == now()->toDateString()) {
+
+            if ($request->hora <= now()->format('H:i')) {
+
+                return back()->withErrors([
+                    'hora' => 'Não é possível agendar horários que já passaram.'
+                ])->withInput();
+
+            }
+
+        }
+
+        // bloquear horário já ocupado
+        $existe = Agendamento::where('data', $request->data)
+            ->where('hora', $request->hora)
+            ->exists();
+
+        if ($existe) {
+            return back()->withErrors([
+                'hora' => 'Este horário já está ocupado.'
+            ])->withInput();
+        }
 
         Agendamento::create([
             'user_id' => Auth::id(),
@@ -55,7 +82,6 @@ class AgendamentoController extends Controller
     {
         $agendamento = Agendamento::findOrFail($id);
 
-        // Usuário só pode ver o próprio
         if (Auth::user()->role !== 'admin' && $agendamento->user_id != Auth::id()) {
             abort(403);
         }
@@ -85,10 +111,35 @@ class AgendamentoController extends Controller
         }
 
         $request->validate([
-            'data' => 'required|date',
+            'data' => 'required|date|after_or_equal:today',
             'hora' => 'required',
             'descricao' => 'nullable|string|max:255',
         ]);
+
+        // bloquear hora passada SOMENTE se for hoje
+        if ($request->data == now()->toDateString()) {
+
+            if ($request->hora <= now()->format('H:i')) {
+
+                return back()->withErrors([
+                    'hora' => 'Não é possível reagendar para um horário que já passou.'
+                ])->withInput();
+
+            }
+
+        }
+
+        // bloquear horário já ocupado (exceto o próprio agendamento)
+        $existe = Agendamento::where('data', $request->data)
+            ->where('hora', $request->hora)
+            ->where('id', '!=', $id)
+            ->exists();
+
+        if ($existe) {
+            return back()->withErrors([
+                'hora' => 'Este horário já está ocupado.'
+            ])->withInput();
+        }
 
         $agendamento->update([
             'data' => $request->data,
@@ -112,7 +163,7 @@ class AgendamentoController extends Controller
         $agendamento->delete();
 
         return redirect()->route('agendamentos.index')
-            ->with('success', 'Agendamento excluído!');
+            ->with('success', 'Agendamento cancelado com sucesso!');
     }
 
 }

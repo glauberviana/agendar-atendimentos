@@ -106,23 +106,30 @@ Data: {{ $proximoAgendamento->data }} às {{ $proximoAgendamento->hora }}
 </p>
 @endif
 
+<div class="flex gap-4 mt-4">
+
+<form method="POST" action="{{ route('agendamentos.destroy', $proximoAgendamento->id) }}">
+@csrf
+@method('DELETE')
+
+<button class="bg-red-500 text-white px-4 py-1 rounded hover:bg-red-900 transition">
+Cancelar
+</button>
+
+</form>
+
+<a href="{{ route('agendamentos.edit', $proximoAgendamento->id) }}"
+class="bg-[#1E7F5A] px-4 py-1 rounded hover:bg-[#16694a] transition text-white">
+Reagendar
+</a>
+
+</div>
+
 @else
 
 <p>Nenhum atendimento</p>
 
 @endif
-
-<div class="flex gap-4 mt-4">
-
-<button class=" bg-red-500 text-white px-4 py-1 rounded hover:bg-red-900 transition">
-Cancelar
-</button>
-
-<button class="bg-[#1E7F5A] px-4 py-1 rounded hover:bg-[#16694a] transition">
-Reagendar
-</button>
-
-</div>
 
 </div>
 
@@ -161,8 +168,8 @@ Atendimentos Recentes
 
 <thead class="bg-gray-100">
 <tr>
-<th class="p-3  text-center">Data</th>
-<th class="p-3  text-center">Hora</th>
+<th class="p-3 text-center">Data</th>
+<th class="p-3 text-center">Hora</th>
 <th class="p-3 text-center">Descrição</th>
 </tr>
 </thead>

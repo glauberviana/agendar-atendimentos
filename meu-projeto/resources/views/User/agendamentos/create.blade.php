@@ -102,6 +102,7 @@ Data
 <input
 type="date"
 name="data"
+min="{{ date('Y-m-d') }}"
 required
 class="w-full border rounded-lg px-3 py-2 text-black focus:outline-none focus:ring-2 focus:ring-white"
 >
