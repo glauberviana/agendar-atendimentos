@@ -96,12 +96,12 @@ Próximo Atendimento
 
 @if($proximoAgendamento)
 
-<p>
-Data: {{ $proximoAgendamento->data }} às {{ $proximoAgendamento->hora }}
+<p class="text-6">
+{{ \Carbon\Carbon::parse($proximoAgendamento->data)->translatedFormat('d') }} de {{ ucfirst(\Carbon\Carbon::parse($proximoAgendamento->data)->locale('pt_BR')->translatedFormat('F')) }} às {{ \Carbon\Carbon::parse($proximoAgendamento->hora)->format('H:i') }}
 </p>
 
 @if($proximoAgendamento->descricao)
-<p class="text-sm mt-2">
+<p class="text-6 mt-2">
 {{ $proximoAgendamento->descricao }}
 </p>
 @endif

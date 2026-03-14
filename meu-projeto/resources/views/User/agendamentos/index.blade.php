@@ -105,18 +105,20 @@ Você ainda não possui agendamentos.
 <div>
 
 <h3 class="font-semibold text-lg">
-Atendimento Acadêmico
+    {{ auth()->user()->name }}
 </h3>
-
-<p class="mt-1">
-{{ $agendamento->data }} às {{ $agendamento->hora }}
-</p>
 
 @if($agendamento->descricao)
 <p class="text-sm mt-2">
 {{ $agendamento->descricao }}
 </p>
 @endif
+
+<p class="mt-1">
+    {{ \Carbon\Carbon::parse($agendamento->data)->translatedFormat('d') }} de {{ ucfirst(\Carbon\Carbon::parse($agendamento->data)->locale('pt_BR')->translatedFormat('F')) }} às {{ \Carbon\Carbon::parse($agendamento->hora)->format('H:i') }}
+</p>
+
+
 
 <div class="flex gap-4 mt-4">
 
@@ -152,7 +154,7 @@ Confirmado
 
 @else
 
-<span class="px-4 py-1 rounded bg-[#FFCC0052] text-black font-semibold">
+<span class="mr-10 px-7 py-2 rounded bg-[#FEF9C2] text-[#944B00] font-semibold">
 Pendente
 </span>
 
