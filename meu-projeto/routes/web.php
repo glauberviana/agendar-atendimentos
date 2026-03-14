@@ -44,16 +44,24 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 
     // ROTAS DE AGENDAMENTO (USUÁRIO)
+// ROTAS DE AGENDAMENTO (USUÁRIO)
 
-    Route::get('/agendamentos', function () {
-        return view('User.agendamentos.index');
-    })->name('agendamentos.index');
+Route::get('/agendamentos/create', [AgendamentoController::class, 'create'])
+    ->name('agendamentos.create');
 
-    Route::get('/agendamentos/create', [AgendamentoController::class, 'create'])
-        ->name('agendamentos.create');
+Route::post('/agendamentos', [AgendamentoController::class, 'store'])
+    ->name('agendamentos.store');
 
-    Route::post('/agendamentos', [AgendamentoController::class, 'store'])
-        ->name('agendamentos.store');
+Route::get('/agendamentos', function () {
+
+    $agendamentos = \App\Models\Agendamento::where('user_id', auth()->id())
+        ->orderBy('data')
+        ->orderBy('hora')
+        ->get();
+
+    return view('User.agendamentos.index', compact('agendamentos'));
+
+})->name('agendamentos.index');
 
 
     // perfil do usuário

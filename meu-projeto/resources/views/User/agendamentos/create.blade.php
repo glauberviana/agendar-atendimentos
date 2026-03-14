@@ -1,10 +1,9 @@
 <x-app-layout>
 
-<div class="flex min-h-screen bg-[#F6F6F6]">
+<div class="flex min-h-screen bg-gray-300">
 
 <!-- SIDEBAR -->
-
-<div class="w-80 bg-gradient-to-b from-[#28A279] to-[#18663C] text-white flex flex-col p-6">
+<div class="w-72 bg-gradient-to-b from-[#28A279] to-[#18663C] text-white flex flex-col p-6">
 
 <h1 class="text-xl font-bold mb-10">
 INSTITUIÇÃO
@@ -13,30 +12,24 @@ INSTITUIÇÃO
 <nav class="space-y-4">
 
 <a href="{{ route('dashboard') }}"
-class="flex items-center gap-3 hover:bg-[#1E7F5A] p-3 rounded-lg transition duration-200">
+class="flex items-center gap-3 hover:bg-[#1E7F5A] p-3 rounded-lg">
 
 <img src="{{ asset('icons/inicio.svg') }}" class="w-5 h-5">
-
 Início
-
 </a>
 
 <a href="{{ route('agendamentos.create') }}"
-class="flex items-center gap-3 bg-[#1E7F5A] p-3 rounded-lg transition duration-200">
+class="flex items-center gap-3 bg-[#1E7F5A] p-3 rounded-lg">
 
 <img src="{{ asset('icons/agendamento.svg') }}" class="w-5 h-5">
-
 Novo Agendamento
-
 </a>
 
 <a href="{{ route('agendamentos.index') }}"
-class="flex items-center gap-3 hover:bg-[#1E7F5A] p-3 rounded-lg transition duration-200">
+class="flex items-center gap-3 hover:bg-[#1E7F5A] p-3 rounded-lg">
 
 <img src="{{ asset('icons/meusagendamentos.svg') }}" class="w-5 h-5">
-
 Meus Agendamentos
-
 </a>
 
 </nav>
@@ -44,94 +37,115 @@ Meus Agendamentos
 </div>
 
 
-
-<!-- CONTEÚDO -->
-
+<!-- ÁREA PRINCIPAL -->
 <div class="flex-1 flex flex-col">
 
-<!-- TOPO -->
+<!-- HEADER -->
+<div class="flex justify-between items-center bg-white border-b border-gray-200 px-8 h-[70px]">
 
-<div class="flex justify-between items-center px-10 pt-10">
-
-<h2 class="text-xl font-semibold text-[#28A279]">
+<h2 class="text-[#28A279] font-semibold text-lg">
 Olá, {{ Auth::user()->name }}
 </h2>
 
-<div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center font-bold">
+<div class="relative">
+
+<button onclick="toggleMenu()"
+class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center font-semibold">
+
 {{ strtoupper(substr(Auth::user()->name,0,1)) }}
+
+</button>
+
+<div id="menuUser"
+class="hidden absolute right-0 mt-2 w-40 bg-white border rounded-lg shadow">
+
+<a href="{{ route('profile.edit') }}"
+class="block px-4 py-2 hover:bg-gray-100">
+Perfil
+</a>
+
+<form method="POST" action="{{ route('logout') }}">
+@csrf
+<button type="submit"
+class="w-full text-left px-4 py-2 hover:bg-gray-100">
+Sair
+</button>
+</form>
+
+</div>
+
 </div>
 
 </div>
 
 
-<!-- LINHA -->
+<!-- CONTEÚDO -->
+<div class="flex flex-1 items-center justify-center">
 
-<div class="w-full h-[4px] bg-[#D9D9D9] mt-6"></div>
+<!-- CARD CENTRAL -->
+<div class="bg-[#269C73] text-white p-10 rounded-xl shadow w-[1000px]">
 
-
-
-<!-- CONTEÚDO CENTRAL -->
-
-<div class="flex flex-col items-center p-10">
-
-<h2 class="text-2xl font-semibold text-[#28A279] mb-10">
-Selecionar Data e Horário
+<h2 class="text-2xl font-semibold mb-6 text-center">
+Novo Agendamento
 </h2>
 
+<form method="POST" action="{{ route('agendamentos.store') }}" class="space-y-5">
 
+@csrf
 
-<div class="flex gap-12">
+<!-- DATA -->
+<div>
+<label class="block mb-1">
+Data
+</label>
 
-<!-- CALENDÁRIO (FAKE) -->
-
-<div class="bg-[#269C73] w-[500px] h-[350px] rounded-[20px] flex items-center justify-center text-white text-xl font-semibold">
-
-Calendário
-
+<input
+type="date"
+name="data"
+required
+class="w-full border rounded-lg px-3 py-2 text-black focus:outline-none focus:ring-2 focus:ring-white"
+>
 </div>
 
+<!-- HORA -->
+<div>
+<label class="block mb-1">
+Hora
+</label>
 
+<input
+type="time"
+name="hora"
+required
+class="w-full border rounded-lg px-3 py-2 text-black focus:outline-none focus:ring-2 focus:ring-white"
+>
+</div>
 
-<!-- HORÁRIOS -->
+<!-- DESCRIÇÃO -->
+<div>
+<label class="block mb-1">
+Descrição
+</label>
 
-<div class="bg-[#269C73] w-[300px] rounded-[20px] p-6 text-white">
+<textarea
+name="descricao"
+rows="3"
+class="w-full border rounded-lg px-3 py-2 text-black focus:outline-none focus:ring-2 focus:ring-white"
+placeholder="Descreva o motivo do atendimento"
+></textarea>
+</div>
 
-<h3 class="text-lg font-semibold mb-6">
-Horário
-</h3>
-
-
-<div class="grid grid-cols-2 gap-4">
-
-<button class="bg-[#1E7F5A] p-3 rounded-lg">
-08:00
-<br>
-<span class="text-xs">Disponível</span>
+<!-- BOTÃO -->
+<button
+type="submit"
+class="w-full bg-[#1E7F5A] text-white py-2 rounded-lg hover:bg-[#16694a] transition font-medium"
+>
+Agendar
 </button>
 
-<button class="bg-[#1E7F5A] p-3 rounded-lg">
-09:00
-<br>
-<span class="text-xs">Disponível</span>
-</button>
+</form>
 
-<button class="bg-[#14543A] p-3 rounded-lg">
-10:00
-<br>
-<span class="text-xs">Selecionado</span>
-</button>
-
-<button class="bg-gray-500 p-3 rounded-lg">
-11:00
-<br>
-<span class="text-xs">Ocupado</span>
-</button>
-
-<button class="bg-[#1E7F5A] p-3 rounded-lg col-span-2">
-14:00
-<br>
-<span class="text-xs">Disponível</span>
-</button>
+</div>
 
 </div>
 
@@ -140,24 +154,13 @@ Horário
 </div>
 
 
+<script>
 
-<!-- BOTÃO CONFIRMAR -->
+function toggleMenu(){
+let menu = document.getElementById('menuUser');
+menu.classList.toggle('hidden');
+}
 
-<div class="flex justify-end w-[850px] mt-12">
-
-<button class="bg-[#1E7F5A] text-white px-8 py-3 rounded-lg hover:bg-[#14543A] transition">
-
-Confirmar
-
-</button>
-
-</div>
-
-
-</div>
-
-</div>
-
-</div>
+</script>
 
 </x-app-layout>
