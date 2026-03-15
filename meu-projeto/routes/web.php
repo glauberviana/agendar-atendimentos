@@ -1,7 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\AtendimentoController;
 use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\HorarioController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\User\AgendamentoController;
 use App\Models\Agendamento;
@@ -102,6 +102,11 @@ Route::middleware(['auth','admin'])
 
     Route::post('/atendimentos',[AtendimentoController::class,'store'])
         ->name('atendimentos.store');
+    
+    Route::get('/historico', function(){
+        return view('admin.historico');
+     }) ->name('historico');
+
 
 });
 

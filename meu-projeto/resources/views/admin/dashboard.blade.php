@@ -146,7 +146,7 @@ Concluído
 
 <td colspan="4" class="text-center py-4">
 
-Nenhum atendimento hoje
+Nenhum atendimento marcado para hoje.
 
 </td>
 
