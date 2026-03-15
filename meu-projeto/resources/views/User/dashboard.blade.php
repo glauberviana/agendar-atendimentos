@@ -96,12 +96,12 @@ Próximo Atendimento
 
 @if($proximoAgendamento)
 
-<p class="text-6">
+<p>
 {{ \Carbon\Carbon::parse($proximoAgendamento->data)->translatedFormat('d') }} de {{ ucfirst(\Carbon\Carbon::parse($proximoAgendamento->data)->locale('pt_BR')->translatedFormat('F')) }} às {{ \Carbon\Carbon::parse($proximoAgendamento->hora)->format('H:i') }}
 </p>
 
 @if($proximoAgendamento->descricao)
-<p class="text-6 mt-2">
+<p class="mt-2">
 {{ $proximoAgendamento->descricao }}
 </p>
 @endif
@@ -118,10 +118,13 @@ Cancelar
 
 </form>
 
-<a href="{{ route('agendamentos.edit', $proximoAgendamento->id) }}"
+<button
+onclick="abrirModal({{ $proximoAgendamento->id }}, '{{ $proximoAgendamento->data }}', '{{ $proximoAgendamento->hora }}', '{{ $proximoAgendamento->descricao }}')"
 class="bg-[#1E7F5A] px-4 py-1 rounded hover:bg-[#16694a] transition text-white">
+
 Reagendar
-</a>
+
+</button>
 
 </div>
 
@@ -211,11 +214,92 @@ Atendimentos Recentes
 </div>
 
 
+<!-- MODAL REAGENDAR -->
+
+<div id="modalReagendar"
+class="hidden fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex items-center justify-center z-50">
+
+<div class="bg-[#269C73] text-white rounded-xl p-8 w-[480px] shadow-2xl">
+
+<h2 class="text-xl font-semibold mb-6">
+Reagendar Atendimento
+</h2>
+
+<form id="formReagendar" method="POST">
+@csrf
+@method('PUT')
+
+<div class="space-y-4">
+
+<div>
+<label>Data</label>
+<input type="date"
+name="data"
+min="{{ date('Y-m-d') }}"
+class="w-full mt-1 border rounded-lg px-3 py-2 text-black">
+</div>
+
+<div>
+<label>Hora</label>
+<input type="time"
+name="hora"
+class="w-full mt-1 border rounded-lg px-3 py-2 text-black">
+</div>
+
+<div>
+<label>Descrição</label>
+<textarea
+name="descricao"
+class="w-full mt-1 border rounded-lg px-3 py-2 text-black"></textarea>
+</div>
+
+</div>
+
+<div class="flex justify-end gap-4 mt-6">
+
+<button type="button"
+onclick="fecharModal()"
+class="px-4 py-2 bg-gray-300 text-black rounded hover:bg-gray-400">
+Cancelar
+</button>
+
+<button type="submit"
+class="px-4 py-2 bg-[#1E7F5A] rounded hover:bg-[#16694a]">
+Salvar
+</button>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+
 <script>
 
 function toggleMenu(){
 let menu = document.getElementById('menuUser');
 menu.classList.toggle('hidden');
+}
+
+function abrirModal(id, data, hora, descricao){
+
+let modal = document.getElementById('modalReagendar');
+
+modal.classList.remove('hidden');
+
+document.querySelector('#formReagendar').action = '/agendamentos/' + id;
+
+document.querySelector('[name=data]').value = data;
+document.querySelector('[name=hora]').value = hora;
+document.querySelector('[name=descricao]').value = descricao;
+
+}
+
+function fecharModal(){
+document.getElementById('modalReagendar').classList.add('hidden');
 }
 
 </script>

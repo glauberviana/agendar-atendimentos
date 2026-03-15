@@ -13,21 +13,18 @@ INSTITUIÇÃO
 
 <a href="{{ route('dashboard') }}"
 class="flex items-center gap-3 hover:bg-[#1E7F5A] p-3 rounded-lg">
-
 <img src="{{ asset('icons/inicio.svg') }}" class="w-5 h-5">
 Início
 </a>
 
 <a href="{{ route('agendamentos.create') }}"
 class="flex items-center gap-3 hover:bg-[#1E7F5A] p-3 rounded-lg">
-
 <img src="{{ asset('icons/agendamento.svg') }}" class="w-5 h-5">
 Novo Agendamento
 </a>
 
 <a href="{{ route('agendamentos.index') }}"
 class="flex items-center gap-3 bg-[#1E7F5A] p-3 rounded-lg">
-
 <img src="{{ asset('icons/meusagendamentos.svg') }}" class="w-5 h-5">
 Meus Agendamentos
 </a>
@@ -52,9 +49,7 @@ Olá, {{ Auth::user()->name }}
 
 <button onclick="toggleMenu()"
 class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center font-semibold">
-
 {{ strtoupper(substr(Auth::user()->name,0,1)) }}
-
 </button>
 
 <div id="menuUser"
@@ -105,7 +100,7 @@ Você ainda não possui agendamentos.
 <div>
 
 <h3 class="font-semibold text-lg">
-    {{ auth()->user()->name }}
+{{ auth()->user()->name }}
 </h3>
 
 @if($agendamento->descricao)
@@ -115,17 +110,16 @@ Você ainda não possui agendamentos.
 @endif
 
 <p class="mt-1">
-    {{ \Carbon\Carbon::parse($agendamento->data)->translatedFormat('d') }} de {{ ucfirst(\Carbon\Carbon::parse($agendamento->data)->locale('pt_BR')->translatedFormat('F')) }} às {{ \Carbon\Carbon::parse($agendamento->hora)->format('H:i') }}
+{{ \Carbon\Carbon::parse($agendamento->data)->translatedFormat('d') }} de {{ ucfirst(\Carbon\Carbon::parse($agendamento->data)->locale('pt_BR')->translatedFormat('F')) }} às {{ \Carbon\Carbon::parse($agendamento->hora)->format('H:i') }}
 </p>
-
-
 
 <div class="flex gap-4 mt-4">
 
-<a href="{{ route('agendamentos.edit', $agendamento->id) }}"
+<button
+onclick="abrirModal({{ $agendamento->id }}, '{{ $agendamento->data }}', '{{ $agendamento->hora }}', '{{ $agendamento->descricao }}')"
 class="bg-[#1E7F5A] px-4 py-1 rounded hover:bg-[#16694a] transition">
 Reagendar
-</a>
+</button>
 
 <form method="POST" action="{{ route('agendamentos.destroy', $agendamento->id) }}">
 @csrf
@@ -140,9 +134,6 @@ Cancelar
 </div>
 
 </div>
-
-
-<!-- STATUS -->
 
 <div>
 
@@ -177,11 +168,92 @@ Pendente
 </div>
 
 
+<!-- MODAL REAGENDAR -->
+
+<div id="modalReagendar"
+class="hidden fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex items-center justify-center z-50">
+
+<div class="bg-[#269C73] text-white rounded-xl p-8 w-[480px] shadow-2xl">
+
+<h2 class="text-xl font-semibold mb-6">
+Reagendar Atendimento
+</h2>
+
+<form id="formReagendar" method="POST">
+@csrf
+@method('PUT')
+
+<div class="space-y-4">
+
+<div>
+<label>Data</label>
+<input type="date"
+name="data"
+min="{{ date('Y-m-d') }}"
+class="w-full mt-1 border rounded-lg px-3 py-2 text-black">
+</div>
+
+<div>
+<label>Hora</label>
+<input type="time"
+name="hora"
+class="w-full mt-1 border rounded-lg px-3 py-2 text-black">
+</div>
+
+<div>
+<label>Descrição</label>
+<textarea
+name="descricao"
+class="w-full mt-1 border rounded-lg px-3 py-2 text-black"></textarea>
+</div>
+
+</div>
+
+<div class="flex justify-end gap-4 mt-6">
+
+<button type="button"
+onclick="fecharModal()"
+class="px-4 py-2 bg-gray-300 text-black rounded hover:bg-gray-400">
+Cancelar
+</button>
+
+<button type="submit"
+class="px-4 py-2 bg-[#1E7F5A] rounded hover:bg-[#16694a]">
+Salvar
+</button>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+
 <script>
 
 function toggleMenu(){
 let menu = document.getElementById('menuUser');
 menu.classList.toggle('hidden');
+}
+
+function abrirModal(id, data, hora, descricao){
+
+let modal = document.getElementById('modalReagendar');
+
+modal.classList.remove('hidden');
+
+document.querySelector('#formReagendar').action = '/agendamentos/' + id;
+
+document.querySelector('[name=data]').value = data;
+document.querySelector('[name=hora]').value = hora;
+document.querySelector('[name=descricao]').value = descricao;
+
+}
+
+function fecharModal(){
+document.getElementById('modalReagendar').classList.add('hidden');
 }
 
 </script>
