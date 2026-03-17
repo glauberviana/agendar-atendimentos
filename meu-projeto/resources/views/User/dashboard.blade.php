@@ -173,7 +173,7 @@
 
                     @else
 
-                    <table class="w-full bg-white text-black rounded-xl overflow-hidden">
+                    <table class="w-full bg-white text-[#269C73] rounded-xl overflow-hidden">
 
                         <thead class="bg-gray-100">
                             <tr>
