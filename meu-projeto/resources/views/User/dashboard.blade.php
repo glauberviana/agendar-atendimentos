@@ -1,6 +1,6 @@
 <x-app-layout>
 
-<div class="flex min-h-screen bg-gray-300">
+<div class="flex min-h-screen bg-[F6F6F6]">
 
 <!-- SIDEBAR -->
 <div class="w-72 bg-gradient-to-b from-[#28A279] to-[#18663C] text-white flex flex-col p-6">
