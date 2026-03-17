@@ -6,18 +6,16 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Agendamento;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon; // ✅ IMPORTANTE
 
 class AgendamentoController extends Controller
 {
 
     public function index()
     {
-        // Admin vê todos os agendamentos
         if (Auth::user()->role === 'admin') {
             $agendamentos = Agendamento::orderBy('data')->orderBy('hora')->get();
-        } 
-        // Usuário comum vê apenas os seus
-        else {
+        } else {
             $agendamentos = Agendamento::where('user_id', Auth::id())
                 ->orderBy('data')
                 ->orderBy('hora')
@@ -39,23 +37,23 @@ class AgendamentoController extends Controller
         $request->validate([
             'data' => 'required|date|after_or_equal:today',
             'hora' => 'required',
+            'tipo' => 'required|string',
             'descricao' => 'nullable|string|max:255',
         ]);
 
-        // bloquear hora passada SOMENTE se for hoje
-        if ($request->data == now()->toDateString()) {
+        // 🔥 VALIDAÇÃO CORRETA COM CARBON
+        $dataHoraSelecionada = Carbon::parse($request->data . ' ' . $request->hora);
 
-            if ($request->hora <= now()->format('H:i')) {
+        // margem de 5 minutos
+        $agora = Carbon::now()->subMinutes(5);
 
-                return back()->withErrors([
-                    'hora' => 'Não é possível agendar horários que já passaram.'
-                ])->withInput();
-
-            }
-
+        if ($dataHoraSelecionada->lessThanOrEqualTo($agora)) {
+            return back()->withErrors([
+                'hora' => 'Escolha um horário um pouco mais à frente.'
+            ])->withInput();
         }
 
-        // bloquear horário já ocupado
+        // horário já ocupado
         $existe = Agendamento::where('data', $request->data)
             ->where('hora', $request->hora)
             ->exists();
@@ -70,6 +68,7 @@ class AgendamentoController extends Controller
             'user_id' => Auth::id(),
             'data' => $request->data,
             'hora' => $request->hora,
+            'tipo' => $request->tipo,
             'descricao' => $request->descricao,
         ]);
 
@@ -113,23 +112,22 @@ class AgendamentoController extends Controller
         $request->validate([
             'data' => 'required|date|after_or_equal:today',
             'hora' => 'required',
+            'tipo' => 'required|string',
             'descricao' => 'nullable|string|max:255',
         ]);
 
-        // bloquear hora passada SOMENTE se for hoje
-        if ($request->data == now()->toDateString()) {
+        // 🔥 VALIDAÇÃO CORRETA COM CARBON
+        $dataHoraSelecionada = Carbon::parse($request->data . ' ' . $request->hora);
 
-            if ($request->hora <= now()->format('H:i')) {
+        $agora = Carbon::now()->subMinutes(5);
 
-                return back()->withErrors([
-                    'hora' => 'Não é possível reagendar para um horário que já passou.'
-                ])->withInput();
-
-            }
-
+        if ($dataHoraSelecionada->lessThanOrEqualTo($agora)) {
+            return back()->withErrors([
+                'hora' => 'Escolha um horário um pouco mais à frente.'
+            ])->withInput();
         }
 
-        // bloquear horário já ocupado (exceto o próprio agendamento)
+        // horário ocupado (exceto ele mesmo)
         $existe = Agendamento::where('data', $request->data)
             ->where('hora', $request->hora)
             ->where('id', '!=', $id)
@@ -144,6 +142,7 @@ class AgendamentoController extends Controller
         $agendamento->update([
             'data' => $request->data,
             'hora' => $request->hora,
+            'tipo' => $request->tipo,
             'descricao' => $request->descricao,
         ]);
 

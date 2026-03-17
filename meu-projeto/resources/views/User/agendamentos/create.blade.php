@@ -105,7 +105,7 @@ name="data"
 min="{{ date('Y-m-d') }}"
 required
 class="w-full border rounded-lg px-3 py-2 text-black focus:outline-none focus:ring-2 focus:ring-white"
->
+> 
 </div>
 
 <!-- HORA -->
@@ -119,11 +119,35 @@ type="time"
 name="hora"
 required
 class="w-full border rounded-lg px-3 py-2 text-black focus:outline-none focus:ring-2 focus:ring-white"
->
+> 
 </div>
 
-<!-- DESCRIÇÃO -->
+<!-- TIPO DE ATENDIMENTO -->
 <div>
+<label class="block mb-1">
+Tipo de Atendimento
+</label>
+
+<select
+name="tipo"
+id="tipo"
+onchange="toggleDescricao()"
+required
+class="w-full border rounded-lg px-3 py-2 text-black focus:outline-none focus:ring-2 focus:ring-white"
+>
+
+<option value="" disabled selected hidden>Selecione</option>
+<option value="Escola">Escola</option>
+<option value="Trabalho">Trabalho</option>
+<option value="Academia">Academia</option>
+<option value="Consulta">Consulta</option>
+<option value="Outros">Outros</option>
+
+</select>
+</div>
+
+<!-- DESCRIÇÃO (SÓ APARECE SE FOR OUTROS) -->
+<div id="campoDescricao" class="hidden">
 <label class="block mb-1">
 Descrição
 </label>
@@ -140,7 +164,7 @@ placeholder="Descreva o motivo do atendimento"
 <button
 type="submit"
 class="w-full bg-[#1E7F5A] text-white py-2 rounded-lg hover:bg-[#16694a] transition font-medium"
->
+> 
 Agendar
 </button>
 
@@ -162,6 +186,31 @@ let menu = document.getElementById('menuUser');
 menu.classList.toggle('hidden');
 }
 
+// MOSTRAR/ESCONDER DESCRIÇÃO
+function toggleDescricao(){
+let tipo = document.getElementById('tipo').value;
+let campo = document.getElementById('campoDescricao');
+
+if(tipo === 'Outros'){
+campo.classList.remove('hidden');
+}else{
+campo.classList.add('hidden');
+}
+}
+
 </script>
+
+<!-- ESTILO SELECT -->
+<style>
+select {
+    background-color: white;
+    color: black;
+}
+
+option:checked {
+    background-color: #269C73;
+    color: white;
+}
+</style>
 
 </x-app-layout>

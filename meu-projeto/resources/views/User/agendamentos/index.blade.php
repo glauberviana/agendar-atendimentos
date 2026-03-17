@@ -34,7 +34,6 @@ Meus Agendamentos
 </div>
 
 
-
 <!-- ÁREA PRINCIPAL -->
 <div class="flex-1 flex flex-col">
 
@@ -75,7 +74,6 @@ Sair
 </div>
 
 
-
 <!-- CONTEÚDO -->
 <div class="flex flex-col items-center px-10 py-10 gap-6 ml-72">
 
@@ -100,10 +98,14 @@ Você ainda não possui agendamentos.
 <div>
 
 <h3 class="font-semibold text-lg">
-{{ auth()->user()->name }}
+@if($agendamento->tipo == 'Outros' && $agendamento->descricao)
+    {{ $agendamento->descricao }}
+@else
+    {{ $agendamento->tipo }}
+@endif
 </h3>
 
-@if($agendamento->descricao)
+@if($agendamento->tipo != 'Outros' && $agendamento->descricao)
 <p class="text-sm mt-2">
 {{ $agendamento->descricao }}
 </p>
@@ -116,7 +118,13 @@ Você ainda não possui agendamentos.
 <div class="flex gap-4 mt-4">
 
 <button
-onclick="abrirModal({{ $agendamento->id }}, '{{ $agendamento->data }}', '{{ $agendamento->hora }}', '{{ $agendamento->descricao }}')"
+onclick="abrirModal(
+{{ $agendamento->id }},
+'{{ $agendamento->data }}',
+'{{ $agendamento->hora }}',
+'{{ $agendamento->descricao }}',
+'{{ $agendamento->tipo }}'
+)"
 class="bg-[#1E7F5A] px-4 py-1 rounded hover:bg-[#16694a] transition">
 Reagendar
 </button>
@@ -137,18 +145,22 @@ Cancelar
 
 <div>
 
-@if($agendamento->status == 'confirmado')
+@php
+$dataHora = \Carbon\Carbon::parse($agendamento->data . ' ' . $agendamento->hora);
+@endphp
 
+@if($dataHora->isPast())
+<span class="px-4 py-1 rounded bg-gray-300 text-black font-semibold">
+Concluído
+</span>
+@elseif($agendamento->status == 'confirmado')
 <span class="px-4 py-1 rounded bg-[#00FF0052] text-black font-semibold">
 Confirmado
 </span>
-
 @else
-
 <span class="mr-10 px-7 py-2 rounded bg-[#FEF9C2] text-[#944B00] font-semibold">
 Pendente
 </span>
-
 @endif
 
 </div>
@@ -168,8 +180,7 @@ Pendente
 </div>
 
 
-<!-- MODAL REAGENDAR -->
-
+<!-- MODAL -->
 <div id="modalReagendar"
 class="hidden fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex items-center justify-center z-50">
 
@@ -187,23 +198,32 @@ Reagendar Atendimento
 
 <div>
 <label>Data</label>
-<input type="date"
-name="data"
+<input type="date" name="data"
 min="{{ date('Y-m-d') }}"
 class="w-full mt-1 border rounded-lg px-3 py-2 text-black">
 </div>
 
 <div>
 <label>Hora</label>
-<input type="time"
-name="hora"
+<input type="time" name="hora"
 class="w-full mt-1 border rounded-lg px-3 py-2 text-black">
 </div>
 
 <div>
+<label>Tipo</label>
+<select name="tipo"
+class="w-full mt-1 border rounded-lg px-3 py-2 text-black">
+<option value="Escola">Escola</option>
+<option value="Trabalho">Trabalho</option>
+<option value="Academia">Academia</option>
+<option value="Consulta">Consulta</option>
+<option value="Outros">Outros</option>
+</select>
+</div>
+
+<div>
 <label>Descrição</label>
-<textarea
-name="descricao"
+<textarea name="descricao"
 class="w-full mt-1 border rounded-lg px-3 py-2 text-black"></textarea>
 </div>
 
@@ -238,17 +258,17 @@ let menu = document.getElementById('menuUser');
 menu.classList.toggle('hidden');
 }
 
-function abrirModal(id, data, hora, descricao){
+function abrirModal(id, data, hora, descricao, tipo){
 
 let modal = document.getElementById('modalReagendar');
-
 modal.classList.remove('hidden');
 
-document.querySelector('#formReagendar').action = '/agendamentos/' + id;
+document.getElementById('formReagendar').action = '/agendamentos/' + id;
 
 document.querySelector('[name=data]').value = data;
 document.querySelector('[name=hora]').value = hora;
 document.querySelector('[name=descricao]').value = descricao;
+document.querySelector('[name=tipo]').value = tipo;
 
 }
 

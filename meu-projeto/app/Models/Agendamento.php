@@ -10,6 +10,7 @@ class Agendamento extends Model
         'user_id',
         'data',
         'hora',
+        'tipo',
         'descricao'
     ];
 }

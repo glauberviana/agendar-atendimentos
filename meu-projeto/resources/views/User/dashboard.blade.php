@@ -1,6 +1,6 @@
 <x-app-layout>
 
-<div class="flex min-h-screen bg-[F6F6F6]">
+<div class="flex min-h-screen bg-gray-300">
 
 <!-- SIDEBAR -->
 <div class="w-72 bg-gradient-to-b from-[#28A279] to-[#18663C] text-white flex flex-col p-6">
@@ -13,21 +13,18 @@ INSTITUIÇÃO
 
 <a href="{{ route('dashboard') }}"
 class="flex items-center gap-3 bg-[#1E7F5A] p-3 rounded-lg">
-
 <img src="{{ asset('icons/inicio.svg') }}" class="w-5 h-5">
 Início
 </a>
 
 <a href="{{ route('agendamentos.create') }}"
 class="flex items-center gap-3 hover:bg-[#1E7F5A] p-3 rounded-lg">
-
 <img src="{{ asset('icons/agendamento.svg') }}" class="w-5 h-5">
 Novo Agendamento
 </a>
 
 <a href="{{ route('agendamentos.index') }}"
 class="flex items-center gap-3 hover:bg-[#1E7F5A] p-3 rounded-lg">
-
 <img src="{{ asset('icons/meusagendamentos.svg') }}" class="w-5 h-5">
 Meus Agendamentos
 </a>
@@ -52,9 +49,7 @@ Olá, {{ Auth::user()->name }}
 
 <button onclick="toggleMenu()"
 class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center font-semibold">
-
 {{ strtoupper(substr(Auth::user()->name,0,1)) }}
-
 </button>
 
 <div id="menuUser"
@@ -84,10 +79,9 @@ Sair
 <!-- CONTEÚDO -->
 <div class="flex flex-col items-center px-10 py-10 gap-10">
 
-<!-- CARDS -->
 <div class="grid grid-cols-2 gap-8 w-full max-w-6xl">
 
-<!-- PRÓXIMO ATENDIMENTO -->
+<!-- 🔥 PRÓXIMO ATENDIMENTO -->
 <div class="bg-[#269C73] text-white p-6 rounded-xl shadow flex flex-col justify-between min-h-[200px]">
 
 <h3 class="text-lg font-semibold mb-2">
@@ -96,15 +90,27 @@ Próximo Atendimento
 
 @if($proximoAgendamento)
 
-<p>
-{{ \Carbon\Carbon::parse($proximoAgendamento->data)->translatedFormat('d') }} de {{ ucfirst(\Carbon\Carbon::parse($proximoAgendamento->data)->locale('pt_BR')->translatedFormat('F')) }} às {{ \Carbon\Carbon::parse($proximoAgendamento->hora)->format('H:i') }}
-</p>
+<!-- 🔥 TIPO -->
+<h4 class="text-xl font-semibold">
+@if($proximoAgendamento->tipo == 'Outros' && $proximoAgendamento->descricao)
+    {{ $proximoAgendamento->descricao }}
+@else
+    {{ $proximoAgendamento->tipo }}
+@endif
+</h4>
 
-@if($proximoAgendamento->descricao)
-<p class="mt-2">
+<!-- 🔽 DESCRIÇÃO -->
+@if($proximoAgendamento->tipo != 'Outros' && $proximoAgendamento->descricao)
+<p class="text-sm mt-2">
 {{ $proximoAgendamento->descricao }}
 </p>
 @endif
+
+<p class="mt-2">
+{{ \Carbon\Carbon::parse($proximoAgendamento->data)->translatedFormat('d') }} de 
+{{ ucfirst(\Carbon\Carbon::parse($proximoAgendamento->data)->locale('pt_BR')->translatedFormat('F')) }} 
+às {{ \Carbon\Carbon::parse($proximoAgendamento->hora)->format('H:i') }}
+</p>
 
 <div class="flex gap-4 mt-4">
 
@@ -112,18 +118,22 @@ Próximo Atendimento
 @csrf
 @method('DELETE')
 
-<button class="bg-red-500 text-white px-4 py-1 rounded hover:bg-red-900 transition">
+<button class="bg-red-500 px-4 py-1 rounded hover:bg-red-900 transition">
 Cancelar
 </button>
-
 </form>
 
+<!-- 🔥 REAGENDAR COM MODAL -->
 <button
-onclick="abrirModal({{ $proximoAgendamento->id }}, '{{ $proximoAgendamento->data }}', '{{ $proximoAgendamento->hora }}', '{{ $proximoAgendamento->descricao }}')"
-class="bg-[#1E7F5A] px-4 py-1 rounded hover:bg-[#16694a] transition text-white">
-
+onclick="abrirModal(
+{{ $proximoAgendamento->id }},
+'{{ $proximoAgendamento->data }}',
+'{{ $proximoAgendamento->hora }}',
+'{{ $proximoAgendamento->descricao }}',
+'{{ $proximoAgendamento->tipo }}'
+)"
+class="bg-[#1E7F5A] px-4 py-1 rounded hover:bg-[#16694a] transition">
 Reagendar
-
 </button>
 
 </div>
@@ -154,7 +164,7 @@ Agendar Novo
 
 
 
-<!-- ATENDIMENTOS RECENTES -->
+<!-- 🔥 ATENDIMENTOS RECENTES -->
 <div class="bg-[#269C73] text-white p-6 rounded-xl shadow w-full max-w-6xl">
 
 <h3 class="text-lg font-semibold mb-6">
@@ -173,7 +183,7 @@ Atendimentos Recentes
 <tr>
 <th class="p-3 text-center">Data</th>
 <th class="p-3 text-center">Hora</th>
-<th class="p-3 text-center">Descrição</th>
+<th class="p-3 text-center">Tipo</th>
 </tr>
 </thead>
 
@@ -192,7 +202,13 @@ Atendimentos Recentes
 </td>
 
 <td class="p-3 text-center">
-{{ $agendamento->descricao }}
+
+@if($agendamento->tipo == 'Outros' && $agendamento->descricao)
+    {{ $agendamento->descricao }}
+@else
+    {{ $agendamento->tipo }}
+@endif
+
 </td>
 
 </tr>
@@ -214,8 +230,8 @@ Atendimentos Recentes
 </div>
 
 
-<!-- MODAL REAGENDAR -->
 
+<!-- 🔥 MODAL REAGENDAR -->
 <div id="modalReagendar"
 class="hidden fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex items-center justify-center z-50">
 
@@ -233,23 +249,32 @@ Reagendar Atendimento
 
 <div>
 <label>Data</label>
-<input type="date"
-name="data"
+<input type="date" name="data"
 min="{{ date('Y-m-d') }}"
 class="w-full mt-1 border rounded-lg px-3 py-2 text-black">
 </div>
 
 <div>
 <label>Hora</label>
-<input type="time"
-name="hora"
+<input type="time" name="hora"
 class="w-full mt-1 border rounded-lg px-3 py-2 text-black">
 </div>
 
 <div>
+<label>Tipo</label>
+<select name="tipo"
+class="w-full mt-1 border rounded-lg px-3 py-2 text-black">
+<option value="Escola">Escola</option>
+<option value="Trabalho">Trabalho</option>
+<option value="Academia">Academia</option>
+<option value="Consulta">Consulta</option>
+<option value="Outros">Outros</option>
+</select>
+</div>
+
+<div>
 <label>Descrição</label>
-<textarea
-name="descricao"
+<textarea name="descricao"
 class="w-full mt-1 border rounded-lg px-3 py-2 text-black"></textarea>
 </div>
 
@@ -284,7 +309,7 @@ let menu = document.getElementById('menuUser');
 menu.classList.toggle('hidden');
 }
 
-function abrirModal(id, data, hora, descricao){
+function abrirModal(id, data, hora, descricao, tipo){
 
 let modal = document.getElementById('modalReagendar');
 
@@ -295,6 +320,7 @@ document.querySelector('#formReagendar').action = '/agendamentos/' + id;
 document.querySelector('[name=data]').value = data;
 document.querySelector('[name=hora]').value = hora;
 document.querySelector('[name=descricao]').value = descricao;
+document.querySelector('[name=tipo]').value = tipo;
 
 }
 
