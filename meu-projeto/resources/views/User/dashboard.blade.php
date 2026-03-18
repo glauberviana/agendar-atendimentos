@@ -122,13 +122,11 @@
 
 
                             <button
-                                onclick="abrirModal(
-                                    {{ $proximoAgendamento->id }},
-                                    '{{ $proximoAgendamento->data }}',
-                                    '{{ $proximoAgendamento->hora }}',
-                                    '{{ $proximoAgendamento->descricao }}',
-                                    '{{ $proximoAgendamento->tipo }}'
-                                )"
+                                data-id="{{ $proximoAgendamento->id }}"
+                                data-data="{{ $proximoAgendamento->data }}"
+                                data-hora="{{ \Carbon\Carbon::parse($proximoAgendamento->hora)->format('H:i') }}"             
+                                data-tipo="{{ $proximoAgendamento->tipo }}"
+                                onclick="abrirModal(this)"
                                 class="bg-[#1E7F5A] px-4 py-1 rounded hover:bg-[#16694a] transition">
                                 Reagendar
                             </button>
@@ -227,7 +225,8 @@
 
 
     <div id="modalReagendar"
-        class="hidden fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex items-center justify-center z-50">
+        style="display:none"
+        class="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex items-center justify-center z-50">
 
         <div class="bg-[#269C73] text-white rounded-xl p-8 w-[480px] shadow-2xl">
 
@@ -280,11 +279,7 @@
                         </select>
                     </div>
 
-                    <div>
-                        <label>Descrição</label>
-                        <textarea name="descricao"
-                            class="w-full mt-1 border rounded-lg px-3 py-2 text-black"></textarea>
-                    </div>
+                    
 
                 </div>
 
@@ -316,24 +311,23 @@
             menu.classList.toggle('hidden');
         }
 
-        function abrirModal(id, data, hora, descricao, tipo) {
+        function abrirModal(btn) {
+            const id = btn.dataset.id;
+            const data = btn.dataset.data;
+            const hora = btn.dataset.hora;
+            const tipo = btn.dataset.tipo;
 
             let modal = document.getElementById('modalReagendar');
-
-            modal.classList.remove('hidden');
+            modal.style.display = 'flex';
 
             document.querySelector('#formReagendar').action = '/agendamentos/' + id;
-
             document.querySelector('[name=data]').value = data;
             document.querySelector('[name=hora]').value = hora;
-            document.querySelector('[name=descricao]').value = descricao;
             document.querySelector('[name=tipo]').value = tipo;
-
         }
 
         function fecharModal() {
-            document.getElementById('modalReagendar').classList.add('hidden');
+            document.getElementById('modalReagendar').style.display = 'none';
         }
     </script>
-
 </x-app-layout>

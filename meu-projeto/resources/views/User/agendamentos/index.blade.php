@@ -1,6 +1,6 @@
 <x-app-layout>
 
-    <div class="flex min-h-screen bg-[F6F6F6]">
+    <div class="flex min-h-screen bg-[#F6F6F6]">
 
         <!-- SIDEBAR -->
         <div class="w-72 h-screen fixed bg-gradient-to-b from-[#28A279] to-[#18663C] text-white flex flex-col p-6">
@@ -75,11 +75,7 @@
 
 
             <!-- CONTEÚDO -->
-            <div class="flex flex-col items-center px-10 py-10 gap-6 ml-72">
-
-                <h2 class="text-2xl font-semibold text-[#28A279]">
-                    Meus Agendamentos
-                </h2>
+            <div class="flex flex-col items-center px-10 py-10 gap-6 ml-72 mt-[70px]">
 
                 @if($agendamentos->isEmpty())
 
@@ -118,13 +114,11 @@
                             <div class="flex gap-4 mt-4">
 
                                 <button
-                                    onclick="abrirModal(
-{{ $agendamento->id }},
-'{{ $agendamento->data }}',
-'{{ $agendamento->hora }}',
-'{{ $agendamento->descricao }}',
-'{{ $agendamento->tipo }}'
-)"
+                                    data-id="{{ $agendamento->id }}"
+                                    data-data="{{ $agendamento->data }}"
+                                    data-hora="{{ \Carbon\Carbon::parse($agendamento->hora)->format('H:i') }}"
+                                    data-tipo="{{ $agendamento->tipo }}"
+                                    onclick="abrirModal(this)"
                                     class="bg-[#1E7F5A] px-4 py-1 rounded hover:bg-[#16694a] transition">
                                     Reagendar
                                 </button>
@@ -182,7 +176,8 @@
 
     <!-- MODAL -->
     <div id="modalReagendar"
-        class="hidden fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex items-center justify-center z-50">
+        style="display:none"
+        class="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex items-center justify-center z-50">
 
         <div class="bg-[#269C73] text-white rounded-xl p-8 w-[480px] shadow-2xl">
 
@@ -235,8 +230,6 @@
                         </select>
                     </div>
 
-
-
                 </div>
 
                 <div class="flex justify-end gap-4 mt-6">
@@ -267,22 +260,24 @@
             menu.classList.toggle('hidden');
         }
 
-        function abrirModal(id, data, hora, descricao, tipo) {
+        function abrirModal(btn) {
+            const id   = btn.dataset.id;
+            const data = btn.dataset.data;
+            const hora = btn.dataset.hora;
+            const tipo = btn.dataset.tipo;
 
             let modal = document.getElementById('modalReagendar');
-            modal.classList.remove('hidden');
+            modal.style.display = 'flex';
 
             document.getElementById('formReagendar').action = '/agendamentos/' + id;
 
             document.querySelector('[name=data]').value = data;
             document.querySelector('[name=hora]').value = hora;
-            document.querySelector('[name=descricao]').value = descricao;
             document.querySelector('[name=tipo]').value = tipo;
-
         }
 
         function fecharModal() {
-            document.getElementById('modalReagendar').classList.add('hidden');
+            document.getElementById('modalReagendar').style.display = 'none';
         }
     </script>
 
