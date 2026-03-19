@@ -21,7 +21,7 @@
 
 <body>
 
-    <div class="flex min-h-screen bg-gray-300">
+    <div class="flex min-h-screen bg-[#F6F6F6]">
 
 
         <!-- SIDEBAR -->

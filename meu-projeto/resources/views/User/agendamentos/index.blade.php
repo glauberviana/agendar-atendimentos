@@ -144,15 +144,15 @@
                             @endphp
 
                             @if($dataHora->isPast())
-                            <span class="px-4 py-1 rounded bg-gray-300 text-black font-semibold">
+                            <span class="bg-gray-300 text-black px-4 py-1 rounded-full font-bold shadow-sm">
                                 Concluído
                             </span>
                             @elseif($agendamento->status == 'confirmado')
-                            <span class="px-4 py-1 rounded bg-[#00FF0052] text-black font-semibold">
+                            <span class="bg-green-400 text-green-900 px-4 py-1 rounded-full font-bold shadow-sm">
                                 Confirmado
                             </span>
                             @else
-                            <span class="mr-10 px-7 py-2 rounded bg-[#FEF9C2] text-[#944B00] font-semibold">
+                            <span class="bg-yellow-200 text-yellow-800 px-4 py-1 rounded-full font-medium mr-2 shadow-sm border border-yellow-300">
                                 Pendente
                             </span>
                             @endif
