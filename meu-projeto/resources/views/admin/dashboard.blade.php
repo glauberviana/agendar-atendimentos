@@ -13,7 +13,7 @@
                 {{ $totalUsuarios }}
             </div>
             <div class="text-sm opacity-90">
-                Total de Usuários
+                Alunos Cadastrados
             </div>
         </div>
 
