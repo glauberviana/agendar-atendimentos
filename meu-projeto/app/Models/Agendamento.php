@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo; // Importe esta classe
 
 class Agendamento extends Model
 {
@@ -11,6 +12,15 @@ class Agendamento extends Model
         'data',
         'hora',
         'tipo',
-        'descricao'
+        'descricao',
+        'status' // Recomendo adicionar o status aqui também para poder editá-lo depois
     ];
+
+    /**
+     * Define a relação: Um agendamento pertence a um Usuário.
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 }

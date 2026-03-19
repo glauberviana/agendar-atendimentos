@@ -4,31 +4,35 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Models\Atendimento;
+use App\Models\Agendamento;
+use Illuminate\Support\Carbon;
 
 class DashboardController extends Controller
 {
+    public function index()
+    {
+        // 1. Total de Usuários cadastrados
+        $totalUsuarios = User::count();
 
-public function index()
-{
+        // 2. Histórico completo: Todos os agendamentos já feitos na história
+        $totalAgendados = Agendamento::count();
 
-$totalUsuarios = User::count();
+        // 3. Total de agendamentos confirmados (no sistema todo)
+        $totalConcluidos = Agendamento::where('status', 'confirmado')->count();
 
-$totalAgendados = Atendimento::where('status','pendente')->count();
+        // 4. Atendimentos de Hoje (SOMENTE OS CONFIRMADOS)
+        // O 'with('user')' é o que permite puxar o nome do aluno na tabela
+        $atendimentosHoje = Agendamento::with('user')
+            ->whereDate('data', Carbon::today())
+            ->where('status', 'confirmado') // <-- FILTRO ADICIONADO AQUI
+            ->orderBy('hora', 'asc')
+            ->get();
 
-$totalConcluidos = Atendimento::where('status','concluido')->count();
-
-
-$atendimentosHoje = Atendimento::whereDate('data', now()->toDateString())->get();
-
-
-return view('admin.dashboard',[
-'totalUsuarios'=>$totalUsuarios,
-'totalAgendados'=>$totalAgendados,
-'totalConcluidos'=>$totalConcluidos,
-'atendimentosHoje'=>$atendimentosHoje
-]);
-
-}
-
+        return view('admin.dashboard', compact(
+            'totalUsuarios',
+            'totalAgendados',
+            'totalConcluidos',
+            'atendimentosHoje'
+        ));
+    }
 }
