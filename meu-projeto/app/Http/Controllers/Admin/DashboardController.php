@@ -11,20 +11,20 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        // 1. Total de Usuários cadastrados
+        // 1. Total de Usuários
         $totalUsuarios = User::count();
 
-        // 2. Histórico completo: Todos os agendamentos já feitos na história
+        // 2. Histórico completo (Contagem de todos os registros)
         $totalAgendados = Agendamento::count();
 
-        // 3. Total de agendamentos confirmados (no sistema todo)
+        // 3. Total de agendamentos confirmados (Sistema todo)
         $totalConcluidos = Agendamento::where('status', 'confirmado')->count();
 
-        // 4. Atendimentos de Hoje (SOMENTE OS CONFIRMADOS)
-        // O 'with('user')' é o que permite puxar o nome do aluno na tabela
+        // 4. Atendimentos de Hoje (Confirmados e Ordenados)
+        // DICA: Verifique se o nome da coluna no banco é 'data' ou 'date'
         $atendimentosHoje = Agendamento::with('user')
-            ->whereDate('data', Carbon::today())
-            ->where('status', 'confirmado') // <-- FILTRO ADICIONADO AQUI
+            ->whereDate('data', Carbon::today()) 
+            ->where('status', 'confirmado')
             ->orderBy('hora', 'asc')
             ->get();
 
